@@ -1,4 +1,3 @@
-
 const products = [
   { id: 1, name: "Product 1", price: 10 },
   { id: 2, name: "Product 2", price: 20 },
@@ -7,35 +6,28 @@ const products = [
   { id: 5, name: "Product 5", price: 50 },
 ];
 
-document.addEventListener("DOMContentLoaded", () => {
-  renderProducts();
-  renderCart();
+const productList = document.getElementById("product-list");
+const cartList = document.getElementById("cart-list");
+const clearCartBtn = document.getElementById("clear-cart-btn");
 
-
-  document.getElementById("clear-cart-btn").addEventListener("click", clearCart);
-});
+let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
 
 function renderProducts() {
-  const productList = document.getElementById("product-list");
-  productList.innerHTML = ""; // Clear existing content
+  productList.innerHTML = "";
   products.forEach((product) => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <span>${product.name} - $${product.price}</span>
-      <button data-id="${product.id}">Add to Cart</button>
+      ${product.name} - $${product.price}
+      <button onclick="addToCart(${product.id})">Add to Cart</button>
     `;
-    li.querySelector("button").addEventListener("click", () => addToCart(product));
     productList.appendChild(li);
   });
 }
 
 function renderCart() {
-  const cartList = document.getElementById("cart-list");
-  cartList.innerHTML = ""; // Clear existing content
-
-  const cart = getCart();
+  cartList.innerHTML = "";
   if (cart.length === 0) {
-    cartList.innerHTML = "<li>The cart is empty.</li>";
+    cartList.innerHTML = "<li>Your cart is empty</li>";
     return;
   }
 
@@ -46,25 +38,28 @@ function renderCart() {
   });
 }
 
-function getCart() {
-  return JSON.parse(sessionStorage.getItem("cart")) || [];
+function addToCart(productId) {
+  const product = products.find((p) => p.id === productId);
+  if (product) {
+    cart.push(product);
+    updateSessionStorage();
+    renderCart();
+  }
 }
 
+function clearCart() {
+  cart = [];
+  updateSessionStorage();
+  renderCart();
+}
 
-function saveCart(cart) {
+function updateSessionStorage() {
   sessionStorage.setItem("cart", JSON.stringify(cart));
 }
 
 
-function addToCart(product) {
-  const cart = getCart();
-  cart.push(product);
-  saveCart(cart);
-  renderCart();
-}
+clearCartBtn.addEventListener("click", clearCart);
 
-
-function clearCart() {
-  sessionStorage.removeItem("cart");
-  renderCart();
-}
+// Initialize the page
+renderProducts();
+renderCart();
