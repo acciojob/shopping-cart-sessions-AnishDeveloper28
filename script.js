@@ -6,6 +6,7 @@ const products = [
   { id: 5, name: "Product 5", price: 50 },
 ];
 
+
 const productList = document.getElementById("product-list");
 const cartList = document.getElementById("cart-list");
 const clearCartBtn = document.getElementById("clear-cart-btn");
@@ -46,6 +47,7 @@ function renderCart() {
     cartList.appendChild(li);
   });
 
+ 
   document.querySelectorAll(".remove-from-cart-btn").forEach((button) => {
     button.addEventListener("click", (e) => {
       const productId = parseInt(e.target.dataset.id, 10);
@@ -80,5 +82,6 @@ function updateCartStorage() {
 }
 
 clearCartBtn.addEventListener("click", clearCart);
+
 renderProducts();
 renderCart();
